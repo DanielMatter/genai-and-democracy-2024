@@ -1,0 +1,20 @@
+{
+    "transformed_representation": [
+        "If you generate tags, put your tags here (individually).",
+        "If you generate embeddings, put your list of floats here.",
+        "If you do all-to-en, this list should only contain one item: your translation.",
+        [
+            "en",
+            "If you translate to multiple languages, put your translation here, prefixed by the language code."
+        ],
+        [
+            0,
+            "de",
+            "You can also prepend a number to your transformed representation. This way, you can generate different representations for each sections of your input."
+        ],
+        [
+            0,
+            "Hence, there can be multiple tags or embeddings for the same section, and you can omit the language tag if it does not apply to your pipeline."
+        ]
+    ]
+}

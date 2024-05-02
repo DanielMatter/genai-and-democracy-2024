@@ -1,0 +1,9 @@
+{
+    "title": "The title of the article.",
+    "timestamp": "2024-01-01T00:00:00Z",
+    "content": [
+        "The content of the article.",
+        "To make search more precise, the content is given in multiple sections / paragraphs.",
+        "This way, the search engine can find the most relevant section of the article."
+    ]
+}
