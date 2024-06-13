@@ -48,20 +48,41 @@ def rank_articles(generated_queries, article_representations):
     An empty return list indicates no matches.
     """
     
+    system_prompt = """You are a helpful assistant working at the EU. It is your job to give users unbiased article recommendations. You will be given a user query, and a list of articles. Your task is to rank the articles by relevance to the query. Response with a list of article indices and rankings as nested JSON arrays. The first index should be the most relevant article, the last the least relevant. The indices should be 0-based. The rankings should be "VERY", "HIGH", "MEDIUM", or "IRRELEVANT". If there are multiple queries, it is only variations of one original one. Only return the rankings as valid JSON, for example [[ 3, "HIGH" ], [5, "MEDIUM"]]. Do not give me anything else, nor any explanation."""
+    
     article_string = [ f"Article {index}: {json.dumps(article)}" for index, article in enumerate(article_representations) ]
+    user_prompt = "User Query: " + json.dumps(generated_queries) + "\n\n" + "Articles: " + "\n".join(article_string)
+    
+    # This call is using the raw mode (raw=True). This mode gives you more flexibility in the response, but is a bit more complex.
+    # You need to look up the template file of your model and format the request accordingly.
+    # If you use raw, other parameters, in particular system, have no effect, as raw overrides them.
+    #
+    # The key advantage of the raw mode is that you can force the model to start with a specific string.
+    # In the example below, we start the model response with "[[", which strongly conditions the model to output JSON.
     call_data = {
         "model": "llama3",
-        "prompt": "User Query: " + json.dumps(generated_queries) + "\n\n" + "Articles: " + "\n".join(article_string),
-        "system": "You are a helpful assistant working at the EU. It is your job to give users unbiased article recommendations. You will be given a user query, and a list of articles. Your task is to rank the articles by relevance to the query. Response with a list of article indices, separated by commas. The first index should be the most relevant article, the last the least relevant. The indices should be 0-based. If there are multiple queries, it is only variations of one original one. Only return the rankings as valid JSON, for example [ 3, 5, 9 ]. Do not give me anything else, nor any explanation.",
-        "stream": False
+        "stream": False,
+        "raw": True,
+        "prompt": f"""<|start_header_id|>system<|end_header_id|>
+        
+        {system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>
+        
+        {user_prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>[["""
     }
+    
     response = r.post("http://localhost:11434/api/generate", json=call_data)
     response = response.json()
-    response_text = response["response"]
     
+    # The model will not regenerate "[[", so we need to add it back in.
+    response = json.loads('[[' + response["response"])
     
-    print(response_text)    
+    def s2i(score):
+        if score == "VERY": return 1.0
+        if score == "HIGH": return 0.75
+        if score == "MEDIUM": return 0.5
+        return 0.0
     
+    response = [ [ index, s2i(score) ] for index, score in response ]
     return []
 
 
