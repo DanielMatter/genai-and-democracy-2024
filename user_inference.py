@@ -31,7 +31,8 @@ def rank_articles(generated_queries, article_representations):
     
     An empty return list indicates no matches.
     """
-    return []
+    result = []
+    print(json.dumps(generated_queries))
 
 
 
