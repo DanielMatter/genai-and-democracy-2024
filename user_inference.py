@@ -83,7 +83,7 @@ def rank_articles(generated_queries, article_representations):
         return 0.0
     
     response = [ [ index, s2i(score) ] for index, score in response ]
-    return []
+    print(response)
 
 
 if True:
