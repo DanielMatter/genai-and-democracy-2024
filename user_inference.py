@@ -12,7 +12,28 @@ def handle_user_query(query, query_id, output_path):
     
     with open(join(output_path, f"{query_id}.json"), "w") as f:
         json.dump(result, f)
+
+
+# TODO OPTIONAL
+# This function is optional for you
+# You can use it to interfer with the default ranking of your system.
+#
+# If you do embeddings, this function will simply compute the cosine-similarity
+# and return the ordering and scores
+def rank_articles(generated_queries, article_representations):
+    """
+    This function takes as arguments the generated / augmented user query, as well as the
+    transformed article representations.
     
+    It needs to return a list of shape (M, 2), where M <= #article_representations.
+    Each tuple contains [index, score], where index is the index in the article_repr array.
+    The list need already be ordered by score. Higher is better, between 0 and 1.
+    
+    An empty return list indicates no matches.
+    """
+    return []
+
+
 
 # This is a sample argparse-setup, you probably want to use in your project:
 parser = argparse.ArgumentParser(description='Run the inference.')
