@@ -7,11 +7,12 @@ import json
 from os.path import join, split as split_path
 import requests as r
 
+
 # TODO Implement the preprocessing steps here
 def handle_input_file(file_location, output_path):
     with open(file_location) as f:
         data = json.load(f)
-    
+
     # Call to local ollama
     call_data = {
         "model": "llama3",
@@ -25,6 +26,7 @@ def handle_input_file(file_location, output_path):
     response_text = response_text.replace("Tags:", "")
     tags = response_text.split(",")
     tags = list(map(lambda x: x.strip().lower(), tags))
+
     
     file_name = split_path(file_location)[-1]
     with open(join(output_path, file_name), "w") as f:
@@ -33,12 +35,14 @@ def handle_input_file(file_location, output_path):
         }, f)
     
 
+
 if False:
     handle_input_file("datastructure/input-file.json", "output")
     exit(0)
 
 # This is a useful argparse-setup, you probably want to use in your project:
 import argparse
+
 parser = argparse.ArgumentParser(description='Preprocess the data.')
 parser.add_argument('--input', type=str, help='Path to the input data.', required=True, action="append")
 parser.add_argument('--output', type=str, help='Path to the output directory.', required=True)
@@ -47,7 +51,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     files_inp = args.input
     files_out = args.output
-    
+
     for file_location in files_inp:
         handle_input_file(file_location, files_out)
 
