@@ -27,11 +27,13 @@ def handle_input_file(file_location, output_path):
     tags = response_text.split(",")
     tags = list(map(lambda x: x.strip().lower(), tags))
 
+    
     file_name = split_path(file_location)[-1]
     with open(join(output_path, file_name), "w") as f:
         json.dump({
-            "transformed_representation": tags
+            "transformed_representation": tags   
         }, f)
+    
 
 
 if False:
