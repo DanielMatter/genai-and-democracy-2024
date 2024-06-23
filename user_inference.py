@@ -3,9 +3,24 @@ import argparse
 from os.path import join
 import json
 import requests as r
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+# Load the tokenizer
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("Helsinki-NLP/opus-mt-de-en")
 
 
 # TODO Implement the inference logic here
+# Function to load and preprocess the dataset
+def load_dataset(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    articles = data["articles"]
+    return articles
+
 def handle_user_query(query, query_id, output_path):
     call_data = {
         "model": "llama3",
@@ -115,4 +130,8 @@ if __name__ == "__main__":
     for query, query_id in zip(queries, query_ids):
         handle_user_query(query, query_id, output)
 
-    
+
+def extract_keywords(query):
+    # Simple keyword extraction using tokenization
+    tokens = tokenizer.tokenize(query)
+    return " ".join(tokens)
